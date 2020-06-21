@@ -1,15 +1,14 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from "@/views/Home";
-import Topo from "@/views/main/TopoChildren/Topo";
-import Emplist from "@/views/main/Empmanage/EmpList/Emplist";
+import Topo from "@/views/Topo/Topo";
 import Login from "@/views/Login/Login";
-import Main from "@/views/main/Main";
-import NetEquipList from "@/views/AssetsMange/NetEquipList/NetEquipList";
-import AssetOverview from "@/views/AssetsMange/AssetOverview";
-import EmpOverview from "@/views/main/Empmanage/EmpOverview";
-import NetDeviceList from "@/views/AssetsMange/NetDeviceList";
+import Manage from "@/views/manage/Manage";
+import {MangeChildren} from "@/router/manage";
+
 Vue.use(VueRouter);
+
+// 注意：以 “ / ”开头的都会被当成从根路径开始
 
   const routes = [{
       path: '/',
@@ -22,54 +21,24 @@ Vue.use(VueRouter);
   }
   ,
     {
-      path: '/main',
-      redirect:'/main/emplist',
+      path: '/home',
+      name: 'App',
+      component: Home
     },
     {
-      path: '/main',
-      name: 'Main',
-      component: Main,
-      children:[
-        {
-          path: '/main/home',
-          name: 'App',
-          component: Home
-        },
-        {
-          path: '/main/topo',
-          name: 'Topo',
-          component: Topo
-        },
-        {
-          path:'/main/emplist',
-          name: "Emplist",
-          component:Emplist
-        },
-        {
-          path:'/main/EmpOverview',
-          name: "EmpOverview",
-          component:EmpOverview
-        },
-        {
-          path:'/main/AssetOverview',
-          name: "AssetOverview",
-          component:AssetOverview
-        },
-        {
-          path:'/main/NetEquipList',
-          name: "NetEquipList",
-          component:NetEquipList
-        },
-        {
-          path:'/main/NetDeviceList',
-          name: "NetDeviceList",
-          component:NetDeviceList
-        },
-
-
-
-
-      ]
+      path: '/topo',
+      name: 'Topo',
+      component: Topo
+    },
+    // {
+    //   path: '/manage',
+    //   redirect:'/manage/EmpOverview',
+    // },
+    {
+      path: '/manage/',
+      name: 'Manage',
+      component: Manage,
+      children:MangeChildren
     }
 
   // {

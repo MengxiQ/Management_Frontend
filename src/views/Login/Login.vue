@@ -52,7 +52,7 @@
     methods:{
       login(){
         console.log(this.form);
-        this.$router.push("/main")
+        this.$router.push("/manage/")
       }
     }
   }

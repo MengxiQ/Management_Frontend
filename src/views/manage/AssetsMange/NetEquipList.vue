@@ -1,50 +1,59 @@
 <template>
     <div id="NetEquipList">
 
-        <el-button type="primary" icon="el-icon-circle-plus-outline" size="mini" @click.native="addEmp">添加设备</el-button>
+        <el-button type="primary" icon="el-icon-circle-plus-outline" size="mini" @click.native="clickAddEquip">添加设备</el-button>
 
-        <!--导出按钮-->
-        <el-popover
-                placement="bottom"
-                title="导出设备"
-                width="200"
-                trigger="click">
-<!--                判断是否选中内容，从而确定显示什么信息和按钮是否可用-->
+<!--    导出按钮-->
+        <div class="btn-mini">
+            <el-popover
+                    placement="bottom"
+                    title="导出设备"
+                    width="200"
+                    trigger="click">
+                <!--                判断是否选中内容，从而确定显示什么信息和按钮是否可用-->
                 <p>是否导出所有选中的设备信息？</p>
                 <el-button size="mini" type="primary" @click.native="exportData">确定</el-button>
                 <el-button size="mini">取消</el-button>
 
-        <el-button slot="reference" type="primary" icon="el-icon-printer" size="mini">导出</el-button>
+                <el-button slot="reference" type="primary" icon="el-icon-printer" size="mini">导出</el-button>
 
-        </el-popover>
-<!--        导入按钮-->
-        <el-popover
-                placement="bottom"
-                title="批量导入设备"
-                width="360"
-                trigger="click">
-            <!--                判断是否选中文件，从而确定显示什么信息和按钮是否可用-->
-            <div>
-                <el-button slot="reference" type="primary" icon="el-icon-download" size="mini" plain>下载模板</el-button>
-                <h5></h5>
-                <el-upload
-                    class="upload-demo"
-                    drag
-                    action="https://jsonplaceholder.typicode.com/posts/"
-                    multiple>
-                <i class="el-icon-upload"></i>
-                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-                <div class="el-upload__tip" slot="tip">ps：只能上传xlsx/svg文件，且不超过500kb</div>
-            </el-upload>
-                <br>
-                <el-button size="mini" type="primary" @click.native="exportData">导入</el-button>
-                <el-button size="mini">取消</el-button>
-            </div>
-        <el-button slot="reference" type="primary" icon="el-icon-upload" size="mini" @click.native="addEmp">导入</el-button>
-        </el-popover>
+            </el-popover>
+        </div>
+
+<!--    导入按钮-->
+        <div class="btn-mini">
+            <el-popover
+                    placement="bottom"
+                    title="批量导入设备"
+                    width="360"
+                    trigger="click">
+                <!--                判断是否选中文件，从而确定显示什么信息和按钮是否可用-->
+                <div>
+                    <el-button slot="reference" type="primary" icon="el-icon-download" size="mini" plain>下载模板</el-button>
+                    <h5></h5>
+                    <el-upload
+                            class="upload-demo"
+                            drag
+                            action="https://jsonplaceholder.typicode.com/posts/"
+                            multiple>
+                        <i class="el-icon-upload"></i>
+                        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                        <div class="el-upload__tip" slot="tip">ps：只能上传xlsx/svg文件，且不超过500kb</div>
+                    </el-upload>
+                    <br>
+                    <el-button size="mini" type="primary" @click.native="exportData">导入</el-button>
+                    <el-button size="mini">取消</el-button>
+                </div>
+                <el-button slot="reference" type="primary" icon="el-icon-upload" size="mini" @click.native="addEmp">导入</el-button>
+            </el-popover>
+        </div>
+
+<!--    表格-->
+<!--        :border="true"-->
         <el-table
                 :data="NEform"
                 highlight-current-row
+                height="430"
                 >
             <el-table-column
                     type="selection"
@@ -82,12 +91,12 @@
                     </el-tooltip>
                 </template>
             </el-table-column>
-
             <el-table-column label="状态"
                              :filters="fitter_status"
                              :filter-method="filterStatus"
                              filter-placement="bottom-start">
                 <template slot-scope="scope">
+                    <div class="hoverPoint">
                     <el-dropdown trigger="click"
                                  v-show="scope.row.nestatus === null">
                           <span class="el-dropdown-link" style="color: #409EFF">
@@ -102,7 +111,7 @@
                             >{{item.remark}}</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
-
+                    </div>
                     <el-popover
                             :title="isShowStatus ? '状态详情':'编辑状态' "
                             trigger="click"
@@ -160,30 +169,30 @@
                                 </div></el-col>
                             </el-row></label></p>
                         </div>
+
                         <div style="text-align: right">
                             <div v-if="isShowStatus">
                                 <el-link type="primary" @click.native="editStatus(scope.row)">编辑</el-link>
                             </div>
                             <div v-else>
-                                <el-button type="primary" size="mini" @click.native="confirmUpdateStatus(scope.row)">确定</el-button>
+                                <el-button type="primary" size="mini" @click.native="confirmUpdateStatus()">确定</el-button>
                                 <el-button type="" size="mini" @click.native="cancleUpdateStatus" >取消</el-button>
                             </div>
-
-
                         </div>
+
                         <div slot="reference" class="name-wrapper">
                             <el-tooltip class="item" effect="dark" :content="'点击查看状态详情'" placement="top">
                                 <div class="status_name">
-                                <el-tag
-                                        v-for="(item,index) in status"
-                                        v-show="showStatus(item.name,scope.row) "
-                                        :key="index"
-                                        size="medium"
-                                        :type="item.show_type"
-                                        closable
-                                        @close="handleTagClose(scope.row,item)"
-                                >{{item.remark}}
-                                </el-tag>
+                                    <el-tag
+                                            v-for="(item,index) in status"
+                                            v-show="showStatus(item.name,scope.row) "
+                                            :key="index"
+                                            size="medium"
+                                            :type="item.show_type"
+                                            closable
+                                            @close="handleTagClose(scope.row,item)"
+                                    >{{item.remark}}
+                                    </el-tag>
                                 </div>
                             </el-tooltip>
 
@@ -207,19 +216,126 @@
                             size="mini"
                             icon="el-icon-edit"
                             @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                    <el-button
-                            size="mini"
-                            type="danger"
-                            icon="el-icon-delete-solid"
-                            @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                    <div class="btn-mini">
+                        <el-popconfirm
+                                confirmButtonText='确定'
+                                cancelButtonText='取消'
+                                icon="el-icon-info"
+                                iconColor="red"
+                                title="是否要删除该设备的所有信息？"
+                                @onConfirm="deleteNEConfirm(scope.row.neid)"
+                        >
+                            <el-button
+                                    slot="reference"
+                                    size="mini"
+                                    type="danger"
+                                    icon="el-icon-delete-solid"
+                            >删除</el-button>
+                        </el-popconfirm>
+                    </div>
+
+
                 </template>
             </el-table-column>
         </el-table>
+
+<!--     分页工具栏-->
+<!--        :page-sizes="[10, 20, 50, 100]" // 选择每页显示的多少条的列表选项-->
+<!--        :page-size="10"      // 实际每页显示多少条，设置为是上面的类别的默认选项-->
+<!--        ::pager-count="9"     //当页码大于9的时候，收起页码 !大于等于 5 且小于等于 21 的奇数-->
+        <div style=" margin:8px 0 8px 0">
+            <el-pagination
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    @prev-click="prev_click"
+                    @next-click="next_click"
+                    v-bind:current-page.sync="currentPage"
+                    :page-sizes="[10, 20, 50, 100]"
+                    :page-count="pager_count"
+                    v-bind:page-size.sync="page_size"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="total">
+            </el-pagination>
+        </div>
+
+<!--    编辑设备信息弹出框-->
+        <el-dialog :title="EditTitle"
+                   :visible="isShowEdit"
+                    @close="Editclose()"
+                   width="40%"
+        >
+            <el-form label-position="left"
+                     label-width="100px"
+                     size="mini"
+                     v-model="target_networkEquipment"
+                     ref="empform"
+            >
+                <el-form-item label="neid" prop="neid" >
+                    <el-input disabled v-model="target_networkEquipment.neid" placeholder="ID值自动生成"></el-input>
+                </el-form-item>
+                <el-form-item label="uuid" prop="uuid">
+                    <el-input v-model="target_networkEquipment.uuid" ></el-input>
+                </el-form-item>
+                <el-form-item label="mac" prop="mac" >
+                    <el-input type="text" v-model="target_networkEquipment.mac" ></el-input>
+                </el-form-item>
+                <el-form-item label="固定资产标签" prop="fixed_id" >
+                    <el-input type="text" v-model="target_networkEquipment.fixed_id" ></el-input>
+                </el-form-item>
+                <el-form-item label="名称" prop="name" >
+                    <el-input type="text" v-model="target_networkEquipment.name" ></el-input>
+                </el-form-item>
+                <el-form-item label="设备型号" prop="unitType" >
+                    <el-input type="text" v-model="target_networkEquipment.unitType" ></el-input>
+                </el-form-item>
+                <el-form-item label="设备类型" prop="NE_type">
+                    <el-select v-model="target_networkEquipment.tid" placeholder="请选择设备类型" >
+                        <el-option v-for="(item,index) in NEtypes"
+                                   :key="index"
+                                :label="item.name" :value="item.tid" ></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="入库时间" prop="stock_date" >
+                    <el-date-picker
+                            v-model="target_networkEquipment.stock_date"
+                            type="datetime"
+                            placeholder="选择日期">
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item label="备注" prop="remark" >
+                    <el-input type="text" v-model="target_networkEquipment.remark" ></el-input>
+                </el-form-item>
+                <!--            :label-width="formLabelWidth"-->
+<!--                <el-form-item label="部门" prop="department" >-->
+<!--                    <el-select v-model="target_networkEquipment" placeholder="请选择部门">-->
+<!--                        &lt;!&ndash;                    从服务端查找所有的部门 v-for&ndash;&gt;-->
+<!--                        <el-option :label="item.departmentName"-->
+<!--                                   :value="item.id" v-for="(item,index) in department"-->
+<!--                                   :key="index">-->
+
+<!--                        </el-option>-->
+<!--                    </el-select>-->
+<!--                </el-form-item>-->
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="Editsubmit()" size="mini">确 定</el-button>
+                <el-button @click="Editclose()" size="mini">取 消</el-button>
+            </div>
+        </el-dialog>
+
     </div>
+<!--    编辑设备信息弹出框 end-->
+
 </template>
 
 <script>
-    import {getNetEquipList,finAllstatus_type,deleteStatus,addStatus,updateStatus} from "@/network/NetEquipList";
+    // 网络请求
+    import {  getNetEquipList,finAllstatus_type,
+              deleteStatus,addStatus,
+              updateStatus,getAllNEtype,
+              NetworkEquipmentAction,deleteNetworkEquipment} from "@/network/NetEquipList";
+    // 实体类
+    import {NEstatus,NetworkEquipment} from "@/entity/NetEquip";
 
     export default {
     name: "NetEquipList",
@@ -227,11 +343,20 @@
       return{
         search:null,
         NEform:[],
+        target_networkEquipment: new NetworkEquipment(),
+        NEtypes:{},//设备类型
         status:[],
-        target_status:{},//用于引用表单中scope.row的nestatus，便于更新操作
+        target_status: new NEstatus(),//便于更新操作时绑定表单
         isShowStatus:true,
         isShowPopover:false,
-
+        isShowEdit:false,//是否显示编辑设备详情窗口
+        EditTitle:"编辑涉笔详细",
+        EditAction:"put",
+        //分页
+        currentPage:1,
+        page_size:10,
+        pager_count:9,
+        total:400
       }
     },
       computed:{
@@ -269,20 +394,11 @@
        * */
       //添加状态
       AddStatus(row,type){
-        class NEstatus{
-          constructor(){
-            this.neid = "";
-            this.status_name = "";
-            this.date = null;
-            this.site = '';
-            this.remark = '';
-          }
 
-        }
         const nEstatus = new NEstatus();
         nEstatus.neid = row.neid;
         nEstatus.status_name = type;
-
+        // 提交
         addStatus(nEstatus).then(res => {
           if(res.data === "success"){
             this.$notify({
@@ -315,16 +431,20 @@
       editStatus(row){
         if(row.nestatus !== null){
           //注意！，这里只是引用
-          this.target_status = row.nestatus;
+          this.target_status.neid = row.nestatus.neid;
+          this.target_status.date = row.nestatus.date;
+          this.target_status.site = row.nestatus.site;
+          this.target_status.remark = row.nestatus.remark;
+          this.target_status.status_name = row.nestatus.status_name;
+          console.log("edit:",this.target_status);
           this.isShowStatus = !this.isShowStatus;
         }
       },
       //确定更新状态
-      confirmUpdateStatus(row){
-        if(row.nestatus !== null){
+      confirmUpdateStatus(){
           //1. 提交
-          console.log("submit",row.nestatus);
-          updateStatus(row.nestatus).then(res => {
+          console.log("submit",this.target_status);
+          updateStatus(this.target_status).then(res => {
             if (res.data === 1){
             this.$notify({
               title: "消息通知",
@@ -352,7 +472,7 @@
 
           //2. 取消显示输入框
           this.isShowStatus = !this.isShowStatus;
-        }
+
       },
       //取消更新状态
       cancleUpdateStatus(){
@@ -383,12 +503,118 @@
           return false
         }
       },
+      /**
+       * 编辑窗口
+       * */
+      // 关闭编辑设备窗口
+      Editclose(){
+        this.isShowEdit = false;
+      },
+      // 提交编辑
+      Editsubmit(){
+        // console.log("submit..,")
+        // console.log(this.target_networkEquipment);
+        NetworkEquipmentAction(this.target_networkEquipment,this.EditAction).then(res => {
+          if(res.data === 1){
+            this.$notify({
+              title:"设备信息跟新通知",
+              type:'success',
+              message:"[" + this.target_networkEquipment.name + "]更新成功。"
+            })
+            //重新加载数据
+            this.NEloadData()
+          }else {
+            this.$notify.error({
+              title:"设备信息更新通知",
+              message:"[" + this.target_networkEquipment.name + "]更新失败。"
+            })
+          }
+        }).catch(error =>{
+          this.$notify.error({
+            title:"设备信息更新通知",
+            message:"[" + this.target_networkEquipment.name + "]更新失败。"+error
+          })
+        })
+        this.Editclose();
+      },
+      /**
+       * 编辑设备信息
+       */
+      //点击编辑设备
       handleEdit(index,row){
-        console.log(index,row)
+        // 设置弹出框的操作方法
+        this.EditTitle = "编辑设备详情";
+        this.EditAction = "put";//更新
+
+        this.target_networkEquipment.neid = row.neid;
+        this.target_networkEquipment.fixed_id = row.fixed_id;
+        this.target_networkEquipment.mac = row.mac;
+        this.target_networkEquipment.name = row.name;
+        this.target_networkEquipment.ne_type = row.ne_type;
+        this.target_networkEquipment.nestatus =  row.nestatus;
+        this.target_networkEquipment.remark = row.remark;
+        this.target_networkEquipment.stock_date = row.stock_date;
+        this.target_networkEquipment.tid = row.tid;
+        this.target_networkEquipment.unitType = row.unitType;
+        this.target_networkEquipment.uuid = row.uuid;
+
+        this.isShowEdit = true;
       },
-      handleDelete(index,row){
-        console.log(index,row)
+      /**
+       * 删除设备
+       */
+      //确认删除
+      deleteNEConfirm(neid){
+        deleteNetworkEquipment(neid).then(res => {
+          if(res.data === 1){
+            this.$notify({
+              title:"设备信息删除通知",
+              type:'success',
+              message:"删除设备成功。"
+            })
+            //重新加载数据
+            this.NEloadData()
+          }else {
+            this.$notify.error({
+              title:"设备信息删除通知",
+              message:"删除失败。"
+            })
+          }
+        }).catch(error =>{
+          this.$notify.error({
+            title:"设备信息删除通知",
+            message:"删除失败。"+error
+          })
+        });
+
       },
+    /**
+     * 添加设备
+     * */
+      clickAddEquip(){
+        // 设备弹出框的操作方法
+      this.EditTitle = "添加网络设备信息";
+      this.EditAction = "post";//添加
+
+
+      this.target_networkEquipment.neid = '';
+      this.target_networkEquipment.fixed_id = '';
+      this.target_networkEquipment.mac = '';
+      this.target_networkEquipment.name = '';
+      this.target_networkEquipment.ne_type = '';
+      this.target_networkEquipment.nestatus =  null;
+      this.target_networkEquipment.remark = '';
+      this.target_networkEquipment.stock_date = '';
+      this.target_networkEquipment.tid = '';
+      this.target_networkEquipment.unitType = '';
+      this.target_networkEquipment.uuid = '';
+
+      this.isShowEdit = true;
+    },
+
+      /**
+       * 删除设备状态
+       */
       handleTagClose(row,item){
         this.$confirm("取消设备 ["+row.name+"] 的 ["+item.remark+"] 状态?","设备状态更新提示",{
           confirmButtonText:'确定',
@@ -436,9 +662,28 @@
       },
       // 状态显示框隐藏时
       popoverHide(){
-        console.log("popoverHide...");
+        // console.log("popoverHide...");
         //如果显示更新状态输入框，则取消显示
         if(this.isShowStatus === false) this.isShowStatus = !this.isShowStatus;
+      },
+      /**
+       * 分页
+       * */
+      //更改每页显示数量
+      handleSizeChange(){
+        alert("page_size:"+this.page_size)
+      },
+      //更改页码
+      handleCurrentChange(){
+        alert(this.currentPage)
+      },
+      //点击上一页
+      prev_click(){
+        alert(this.currentPage)
+      },
+      //点击下一页
+      next_click(){
+        alert(this.currentPage)
       },
       /**
        * 网络请求
@@ -458,11 +703,21 @@
         }).catch(res => {
           console.log(res);
         })
+      },
+      getAllNEtype(){
+        getAllNEtype().then(res => {
+          this.NEtypes = res.data;
+        }).catch(error =>{
+          console.log("获取所有的设备类型失败！")
+          console.log(error)
+        })
       }
     },
     created(){
       this.finAllstatus_type();
       this.NEloadData();
+      this.getAllNEtype();
+
     }
   }
 </script>
@@ -478,6 +733,13 @@
     }
     .status_name:hover{
         cursor: pointer;
+    }
+    .hoverPoint:hover{
+        cursor: pointer;
+    }
+    .btn-mini{
+        display: inline-block;
+        margin-left: 8px;
     }
 
 </style>

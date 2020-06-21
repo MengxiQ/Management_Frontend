@@ -1,14 +1,22 @@
 <template>
   <div id="app">
-   <router-view/>
+      <el-container>
+      <el-header height="60px" style="padding:0"><Header/></el-header>
+          <el-container>
+              <router-view/>
+          </el-container>
+      </el-container>
+
   </div>
 </template>
 
 <script>
+
+import Header from "@/components/Header";
+
 export default {
   name: 'App',
-  components: {
-  }
+  components: {Header}
 }
 </script>
 
@@ -36,7 +44,7 @@ export default {
   }
   .el-aside{
     background-color: #a2a2a2;
-    height: 100vh;
+    height: calc(100vh - 60px);
 
   }
   .el-footer{

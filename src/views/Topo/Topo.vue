@@ -13,9 +13,9 @@
 </template>
 
 <script>
-  import Step1 from "@/views/main/TopoChildren/step1";
-  import Step2 from "@/views/main/TopoChildren/step2";
-  import Step3 from "@/views/main/TopoChildren/step3";
+  import Step1 from "@/views/Topo/step1";
+  import Step2 from "@/views/Topo/step2";
+  import Step3 from "@/views/Topo/step3";
   export default {
     name: "Topo",
     components: {Step3, Step2, Step1},

@@ -70,7 +70,7 @@
 <script>
   // eslint-disable-next-line no-unused-vars
     import {getEmplist,getDepartment,deleteEmp} from "@/network/emplist";
-    import Edit from "@/views/main/Empmanage/EmpList/Edit";
+    import Edit from "@/views/manage/Empmanage/EmpList/Edit";
     export default {
     name: "Emplist",
       components: {Edit},

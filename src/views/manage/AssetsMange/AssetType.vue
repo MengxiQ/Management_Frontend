@@ -1,12 +1,13 @@
 <template>
-    <div class="Main">
-        <router-view></router-view>
+    <div id="Assettype">
+
+
     </div>
 </template>
 
 <script>
   export default {
-    name: "MainContent"
+    name: "Assettype"
   }
 </script>
 

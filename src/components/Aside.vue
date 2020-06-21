@@ -3,10 +3,9 @@
         <div class="Collapse" @click="Collapse" ref="Collapse" :class="{CollapseTF:isCollapse}">
             <i class="el-icon-caret-left" ></i>
         </div>
-
+        <!--                :default-active="activeIndex"-->
         <el-menu
                 :unique-opened="true"
-                :default-active="activeIndex"
                 class="el-menu-vertical-demo"
                 @open="handleOpen"
                 @close="handleClose"
@@ -16,12 +15,13 @@
             <el-submenu index="EmpManage">
                 <template slot="title">
                     <i class="el-icon-menu"></i>
-                    <span>员工管理</span>
+                    <span>企业管理</span>
                 </template>
                 <el-menu-item-group>
 <!--                    <template slot="title">分组一</template>-->
-                    <el-menu-item index="EmpOverview" slot="title">员工概况</el-menu-item>
+                    <el-menu-item index="EmpOverview" slot="title">企业概况</el-menu-item>
                     <el-menu-item index="emplist" slot="title">员工列表</el-menu-item>
+                    <el-menu-item index="emplist" slot="title">部门管理</el-menu-item>
                 </el-menu-item-group>
             </el-submenu>
             <el-submenu index="AssetsManage">
@@ -34,7 +34,8 @@
                     <el-menu-item index="AssetOverview" slot="title">资产概况</el-menu-item>
                     <el-menu-item index="NetEquipList" slot="title">网络设备</el-menu-item>
                     <el-menu-item index="NetDeviceList" slot="title">网络器件</el-menu-item>
-                    <el-menu-item index="NetDeviceList" slot="title">机柜管理</el-menu-item>
+                    <el-menu-item index="CabinetList" slot="title">机柜管理</el-menu-item>
+                    <el-menu-item index="AssetType" slot="title">类型管理</el-menu-item>
                 </el-menu-item-group>
             </el-submenu>
             <el-submenu index="AssetsManage">
