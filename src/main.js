@@ -9,6 +9,9 @@ import store from './store'
 Vue.use(ElementUI);
 Vue.config.productionTip = false
 
+import echarts from 'echarts'
+Vue.prototype.$echarts = echarts
+
 new Vue({
   router,
   store,

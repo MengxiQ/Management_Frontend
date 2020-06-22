@@ -48,6 +48,20 @@
             </el-popover>
         </div>
 
+<!--     批量操作按钮-->
+        <div class="btn-mini">
+            <el-dropdown>
+                <el-button type="primary" size="mini">
+                    批量操作<i class="el-icon-arrow-down el-icon--right"></i>
+                </el-button>
+                <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item icon="el-icon-delete">删除选中</el-dropdown-item>
+                    <el-dropdown-item icon="el-icon-printer">导出选中</el-dropdown-item>
+                    <el-dropdown-item icon="el-icon-edit-outline">更新选中</el-dropdown-item>
+                </el-dropdown-menu>
+            </el-dropdown>
+        </div>
+
 <!--    表格-->
 <!--        :border="true"-->
         <el-table
