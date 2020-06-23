@@ -32,25 +32,6 @@ export default {
 
 
 }
-  .el-container{
-  }
-  .el-header{
-    background-color: bisque;
-  }
-  .el-main{
-    /*background-color: #f6f6f6;*/
-    height: 100vh;
-
-  }
-  .el-aside{
-    background-color: #a2a2a2;
-    height: calc(100vh - 60px);
-
-  }
-  .el-footer{
-    background-color: #3b3b3b;
-    color: white;
-  }
   ::-webkit-scrollbar{
     display: none;
   }

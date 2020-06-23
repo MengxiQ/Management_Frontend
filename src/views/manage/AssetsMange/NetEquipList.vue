@@ -55,7 +55,7 @@
                     批量操作<i class="el-icon-arrow-down el-icon--right"></i>
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item icon="el-icon-delete">删除选中</el-dropdown-item>
+                    <el-dropdown-item icon="el-icon-delete" @click.native="deleteSelection">删除选中</el-dropdown-item>
                     <el-dropdown-item icon="el-icon-printer">导出选中</el-dropdown-item>
                     <el-dropdown-item icon="el-icon-edit-outline">更新选中</el-dropdown-item>
                 </el-dropdown-menu>
@@ -68,6 +68,9 @@
                 :data="NEform"
                 highlight-current-row
                 height="430"
+                v-loading="loading"
+                @select="select"
+                @select-all="select"
                 >
             <el-table-column
                     type="selection"
@@ -89,7 +92,12 @@
             </el-table-column>
             <el-table-column
                     label="类型"
-                    prop="ne_type">
+                    prop="ne_type"
+                    :filters="fitter_NEtype"
+                    :filter-method="filterNEtype"
+                    filter-placement="bottom-start"
+
+            >
             </el-table-column>
             <el-table-column
                     label="型号"
@@ -108,7 +116,8 @@
             <el-table-column label="状态"
                              :filters="fitter_status"
                              :filter-method="filterStatus"
-                             filter-placement="bottom-start">
+                             filter-placement="bottom-start"
+            >
                 <template slot-scope="scope">
                     <div class="hoverPoint">
                     <el-dropdown trigger="click"
@@ -275,7 +284,7 @@
 <!--    编辑设备信息弹出框-->
         <el-dialog :title="EditTitle"
                    :visible="isShowEdit"
-                    @close="Editclose()"
+                    @close="Editclose"
                    width="40%"
         >
             <el-form label-position="left"
@@ -344,12 +353,18 @@
 
 <script>
     // 网络请求
-    import {  getNetEquipList,finAllstatus_type,
-              deleteStatus,addStatus,
-              updateStatus,getAllNEtype,
-              NetworkEquipmentAction,deleteNetworkEquipment} from "@/network/NetEquipList";
+    import {
+        addStatus,
+        deleteNetworkEquipment,
+        deleteStatus,
+        finAllstatus_type,
+        getAllNEtype,
+        getNetEquipList,
+        NetworkEquipmentAction,
+        updateStatus
+    } from "@/network/NetEquipList";
     // 实体类
-    import {NEstatus,NetworkEquipment} from "@/entity/NetEquip";
+    import {NEstatus, NetworkEquipment} from "@/entity/NetEquip";
 
     export default {
     name: "NetEquipList",
@@ -358,7 +373,7 @@
         search:null,
         NEform:[],
         target_networkEquipment: new NetworkEquipment(),
-        NEtypes:{},//设备类型
+        NEtypes:null,//设备类型
         status:[],
         target_status: new NEstatus(),//便于更新操作时绑定表单
         isShowStatus:true,
@@ -370,7 +385,10 @@
         currentPage:1,
         page_size:10,
         pager_count:9,
-        total:400
+        total:400,
+          //是否显示加载
+          loading:true,
+          selection:null//保存着被选中的行
       }
     },
       computed:{
@@ -397,9 +415,31 @@
             mapper.push({
               text : "空状态",
               value : null
-            })
-
+            });
             return  mapper;
+        },
+          //用NEtypes数据生成一个筛选数组对象
+          fitter_NEtype(){
+            if(this.NEtypes !== null){
+                return this.NEtypes.map(item => {
+                    //1.处理数据,返回指定的格式
+                    //防止从null中读取属性
+                    if (item.tid !== null && item.name !== null) {
+                        return {
+                            text: item.name,
+                            value: item.tid
+                        }
+                    } else {
+                        return {
+                            text: "",
+                            value: ""
+                        }
+                    }
+                });
+          }else {
+                return []
+            }
+
         }
       },
     methods:{
@@ -502,6 +542,9 @@
         // }
 
       },
+        /**
+         * 筛选方法
+         * */
       //筛选状态
       filterStatus(value, row){
         //防止null引用属性，需要判断row.nestatus是否为null
@@ -510,6 +553,13 @@
         }
         else return row.nestatus === value;
       },
+        //筛选设备的类型
+        filterNEtype(value, row) {
+            //防止null引用属性，需要判断row.nestatus是否为null
+            if (row.NEtypes !== null) {
+                return value === row.tid;
+            } else return false;
+        },
       showStatus(name,row){
         if(row.nestatus !== null && row.nestatus !== undefined){
           return name === row.nestatus.status_name;
@@ -517,6 +567,56 @@
           return false
         }
       },
+        /**
+         * 多选方法
+         * */
+        //单选触发
+        // eslint-disable-next-line no-unused-vars
+        select(selection, row){
+            this.selection = selection;
+
+        },
+
+        //点击删除选中
+        deleteSelection(){
+          if(this.selection !== null){
+              //这里有待优化！
+              this.$confirm("是否删除选中的所有条目？","提示",{
+                  type:'error'
+                  }
+              ).then(() =>{
+                  this.selection.forEach((item,index) => {
+                      console.log(item,index);
+                      deleteNetworkEquipment(item.neid);
+                      //只需要判断index和长度就可以知道是否执行完成！但是，操作可能没有完成,
+                      //建议后面改成返送一次服务器处理一次的方法
+                      if (this.selection.length -1  === index){
+                          console.log(index);
+                          deleteNetworkEquipment(item.neid).then(() =>{
+                                  console.log("complete!");
+                                  this.NEloadData();
+                                  this.$message({
+                                      type:"success",
+                                      message:"全部删除完成！"
+                                  })
+                          })
+
+                      }else{
+                          deleteNetworkEquipment(item.neid);
+                      }
+                  });
+              }).catch(() =>{
+                  this.$message({
+                      message:'已经取消操作。！'
+                  });
+              });
+          }else {
+              this.$message({
+                  message:'没有选中任何条目！'
+              });
+          }
+        },
+
       /**
        * 编辑窗口
        * */
@@ -548,7 +648,7 @@
             title:"设备信息更新通知",
             message:"[" + this.target_networkEquipment.name + "]更新失败。"+error
           })
-        })
+        });
         this.Editclose();
       },
       /**
@@ -703,12 +803,20 @@
        * 网络请求
        * */
       NEloadData(){
+          // 显示加载中
+          this.loading = true;
         getNetEquipList().then(res =>{
           this.NEform = res.data;
+          //加载完成
+            this.loading = false;
           // console.log("NEform:")
           // console.log(this.NEform);
         }).catch(erro =>{
           console.log(erro);
+          this.$notify.error({
+              duration: 0,
+              message:"加载数据失败，请手动刷新"
+          })
         })
       },
       finAllstatus_type(){
