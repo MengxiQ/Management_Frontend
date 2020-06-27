@@ -1,6 +1,12 @@
 <template>
     <div id="NetEquipList">
-
+        <div class="heard_nav">
+            <el-breadcrumb separator-class="el-icon-arrow-right">
+                <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
+                <el-breadcrumb-item>资产管理</el-breadcrumb-item>
+                <el-breadcrumb-item>资产概述</el-breadcrumb-item>
+            </el-breadcrumb>
+        </div>
         <el-button type="primary" icon="el-icon-circle-plus-outline" size="mini" @click.native="clickAddEquip">添加设备</el-button>
 
 <!--    导出按钮-->
