@@ -38,7 +38,7 @@
                     <el-menu-item index="AssetType" slot="title">类型管理</el-menu-item>
                 </el-menu-item-group>
             </el-submenu>
-            <el-submenu index="AssetsManage">
+            <el-submenu index="RepairManage">
                 <template slot="title">
                     <i class="el-icon-s-cooperation"></i>
                     <span>故障管理</span>
@@ -65,7 +65,7 @@
                     <el-menu-item index="888" slot="title">其他文档</el-menu-item>
                 </el-menu-item-group>
             </el-submenu>
-            <el-submenu index="DocManage">
+            <el-submenu index="BusManage">
                 <template slot="title">
                     <i class="el-icon-document-copy"></i>
                     <span>事务管理</span>

@@ -26,6 +26,19 @@
             <el-menu-item index="/3" disabled>消息中心</el-menu-item>
             <el-menu-item index="/4">站点地图</el-menu-item>
         </el-menu>
+        <div class="avatar" >
+                <el-popover
+                        placement="top-start"
+
+                        trigger="hover"
+                      >
+                    <li class="avatar_item"><i class="el-icon-user-solid" style="margin-right: 10px"></i>个人中心</li>
+                    <li class="avatar_item"><i class="el-icon-s-comment" style="margin-right: 10px"></i>我的消息</li>
+                    <li class="avatar_item"><i class="el-icon-download" style="transform: rotate(90deg);margin-right: 10px"></i>注销</li>
+                    <el-avatar size="mini" :src="circleUrl" slot="reference"></el-avatar>
+                </el-popover>
+
+        </div>
     </div>
 </template>
 
@@ -50,5 +63,23 @@
 <style scoped>
     .Header{
 
+    }
+    .avatar{
+        position: absolute;
+        right: 50px;
+        top: 10px;
+    }
+    .avatar:hover{
+        cursor: pointer;
+    }
+    .avatar_item{
+        list-style: none;
+        text-decoration: none;
+        padding: 10px;
+
+    }
+    .avatar_item:hover{
+        cursor: pointer;
+        background: rgb(236,245,255);
     }
 </style>

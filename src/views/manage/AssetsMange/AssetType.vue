@@ -1,6 +1,6 @@
 <template>
     <div id="Assettype">
-
+        <h1>AssetType</h1>
 
     </div>
 </template>
