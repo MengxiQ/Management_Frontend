@@ -7,3 +7,10 @@ export function getTypeOverview() {
     };
     return request(config)
 }
+export  function getTypeStatusCount() {
+    const config = {
+        url:"/NetworkEquipment/TypeStatusCount",
+        method:"get"
+    };
+    return request(config)
+}

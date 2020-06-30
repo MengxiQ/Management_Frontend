@@ -79,7 +79,7 @@ export function updateStatus(data) {
   return request(config)
 }
 
-// 获取所有的设备状态
+// 获取所有的设备类型
 export function getAllNEtype() {
   const config = {
     url:'/NetworkEquipment/NEtype',

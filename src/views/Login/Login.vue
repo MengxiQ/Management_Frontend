@@ -4,7 +4,7 @@
 <!--                    <el-image src="@/assets/images/login/logo.jpg"></el-image>-->
                     <img id="logo" src="@/assets/images/login/logo.jpg">
 <!--                    <h1>综合信息管理</h1>-->
-                    <h1 class="title">综合信息管理系统</h1>
+                    <h1 class="title">IT综合信息管理系统</h1>
                     <div class="info">
                     <el-link type="primary">中文</el-link>
                         <span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</span>

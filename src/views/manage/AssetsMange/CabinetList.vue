@@ -9,12 +9,11 @@
         </div>
         <div class="mainContent">
             <el-row :gutter="20">
-                <el-col :md="6" :xm="12">
+                <el-col :md="8" :xm="12">
+
                     <div style="background: white;
                     text-align: left;
 
-                    border-left: 5px rgb(58, 142, 230) solid;
-                    padding: 5px;
                     ">区域选择</div>
                     <el-tree
                             :data="SpanningTree"
@@ -26,30 +25,95 @@
                             @node-click="node_click"
                             @dblclick.native="node_dblclick"
                           >
-                  <span class="custom-tree-node" slot-scope="{ node, data }" >
-                    <span style="margin-right: 20px"><i class="el-icon-s-home" style="margin-right: 5px"></i>{{ node.label }}</span>
-                    <span style="">
-                      <el-button
-                              type="text"
-
-                              size="mini"
-                              @click="() => append(data)">
-                               <i class="el-icon-circle-plus"></i> 添加
-                      </el-button>
-                      <el-button
-                              type="text"
-
-                              size="mini"
-                              @click="() => remove(node, data)">
-                               <i class="el-icon-remove"></i> 移除
-                      </el-button>
-                    </span>
+<!--                slot-scope        data-->
+                  <span class="custom-tree-node" slot-scope="{ node }" >
+                    <span style="margin-right: 0px"><i class="el-icon-s-home" style="margin-right: 0px"></i>{{ node.label }}</span>
+<!--                        <span style="">-->
+<!--                          <el-button-->
+<!--                                  type="text"-->
+<!--    -->
+<!--                                  size="mini"-->
+<!--                                  @click="() => append(data)">-->
+<!--                                   <i class="el-icon-circle-plus"></i> 添加-->
+<!--                          </el-button>-->
+<!--                          <el-button-->
+<!--                                  type="text"-->
+<!--    -->
+<!--                                  size="mini"-->
+<!--                                  @click="() => remove(node, data)">-->
+<!--                                   <i class="el-icon-remove"></i> 移除-->
+<!--                          </el-button>-->
+<!--                        </span>-->
                   </span>
                     </el-tree>
 
                 </el-col>
 
-                <el-col :md="18" :xs="12">
+                <el-col :md="16" :xs="12">
+                    <div class="btn-group">
+
+                        <el-button type="primary" icon="el-icon-circle-plus-outline" size="mini" @click.native="clickAddEquip">添加设备</el-button>
+
+                        <!--    导出按钮-->
+                        <div class="btn-mini">
+                            <el-popover
+                                    placement="bottom"
+                                    title="导出设备"
+                                    width="200"
+                                    trigger="click">
+                                <!--                判断是否选中内容，从而确定显示什么信息和按钮是否可用-->
+                                <p>是否导出所有选中的设备信息？</p>
+                                <el-button size="mini" type="primary" @click.native="exportData">确定</el-button>
+                                <el-button size="mini">取消</el-button>
+
+                                <el-button slot="reference" type="primary" icon="el-icon-printer" size="mini">导出</el-button>
+
+                            </el-popover>
+                        </div>
+
+                        <!--    导入按钮-->
+                        <div class="btn-mini">
+                            <el-popover
+                                    placement="bottom"
+                                    title="批量导入设备"
+                                    width="360"
+                                    trigger="click">
+                                <!--                判断是否选中文件，从而确定显示什么信息和按钮是否可用-->
+                                <div>
+                                    <el-button slot="reference" type="primary" icon="el-icon-download" size="mini" plain>下载模板</el-button>
+                                    <h5></h5>
+                                    <el-upload
+                                            class="upload-demo"
+                                            drag
+                                            action="https://jsonplaceholder.typicode.com/posts/"
+                                            multiple>
+                                        <i class="el-icon-upload"></i>
+                                        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                                        <div class="el-upload__tip" slot="tip">ps：只能上传xlsx/svg文件，且不超过500kb</div>
+                                    </el-upload>
+                                    <br>
+                                    <el-button size="mini" type="primary" @click.native="exportData">导入</el-button>
+                                    <el-button size="mini">取消</el-button>
+                                </div>
+                                <el-button slot="reference" type="primary" icon="el-icon-upload" size="mini" @click.native="addEmp">导入</el-button>
+                            </el-popover>
+                        </div>
+
+                        <!--     批量操作按钮-->
+                        <div class="btn-mini">
+                            <el-dropdown>
+                                <el-button type="primary" size="mini">
+                                    批量操作<i class="el-icon-arrow-down el-icon--right"></i>
+                                </el-button>
+                                <el-dropdown-menu slot="dropdown">
+                                    <el-dropdown-item icon="el-icon-delete" @click.native="deleteSelection">删除选中</el-dropdown-item>
+                                    <el-dropdown-item icon="el-icon-printer">导出选中</el-dropdown-item>
+                                    <el-dropdown-item icon="el-icon-edit-outline">更新选中</el-dropdown-item>
+                                </el-dropdown-menu>
+                            </el-dropdown>
+                        </div>
+
+                    </div>
                     <el-table
                             v-loading="isLoading"
                             :data="cabinetList"
@@ -91,21 +155,40 @@
                         </el-table-column>
 
                         <el-table-column
-                                align="right" width="150">
-                            <template slot="header">
+                                align="right"
+                                label="操作"
+                                width="120"
+                        >
+                            <template slot="header" >
                                 <el-input
                                         v-model="search"
                                         size="mini"
-                                        placeholder="输入关键字搜索"/>
+                                        placeholder="关键字搜索"/>
                             </template>
                             <template slot-scope="scope">
                                 <el-button
                                         size="mini"
-                                        @click="handleEdit(scope.$index, scope.row)">Edit</el-button>
-                                <el-button
-                                        size="mini"
-                                        type="danger"
-                                        @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
+                                        icon="el-icon-edit"
+                                        @click="handleEdit(scope.$index, scope.row)"></el-button>
+                                <div class="btn-mini">
+                                    <el-popconfirm
+                                            confirmButtonText='确定'
+                                            cancelButtonText='取消'
+                                            icon="el-icon-info"
+                                            iconColor="red"
+                                            title="是否要删除该设备的所有信息？"
+                                            @onConfirm="deleteNEConfirm(scope.row.neid)"
+                                    >
+                                        <el-button
+                                                slot="reference"
+                                                size="mini"
+                                                type="danger"
+                                                icon="el-icon-delete-solid"
+                                        ></el-button>
+                                    </el-popconfirm>
+                                </div>
+
+
                             </template>
                         </el-table-column>
                     </el-table>
@@ -120,7 +203,7 @@
 </template>
 
 <script>
-    import {getCabines,getSpanningTree} from "../../../network/Cabinet";
+    import {getCabines,getSpanningTree} from "@/network/Cabinet";
 
 
     let id = 1000;
@@ -202,6 +285,7 @@
     }
     .mainContent{
         padding: 10px;
+        background: white;
     }
 </style>
 <style>
@@ -209,8 +293,13 @@
         font-size: 14px;
         height: 35px;
     }
-    .heard_nav{
-        /*background: wheat;*/
-        padding: 8px 0;
+
+    .btn-group{
+
+        text-align: left;
+    }
+    .btn-mini{
+        display: inline-block;
+        margin-left: 8px;
     }
 </style>

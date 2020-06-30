@@ -49,27 +49,102 @@
 </template>
 
 <script>
-    import {getTypeOverview} from "../../../network/assetOverview";
+    import {getTypeOverview,getTypeStatusCount} from "@/network/assetOverview";
+    import {getAllNEtype,finAllstatus_type} from "@/network/NetEquipList";
 
     export default {
     name: "AssetOverview",
     data(){
       return {
-        typeOverview:[]
+        typeOverview:[],
+        TypeStatusCount:null,
+        NEtypes:null,
+        status_type:null,
+        countlist:[]
       }
     },
+      computed:{
+        NEtypesList(){
+          return this.NEtypes.map(item =>{
+            if (item.name !== null) return item.name;
+          })
+        },
+        status_typeList(){
+          return this.status_type.map(item => {
+            if (item.name !== null) return item.name;
+          })
+        },
+        TypeStatusCountList(){
+
+            // 1、map遍历所有的状态类型
+           //1.1 foreach遍历所有设备类型
+          //1.1.1 foreach遍历所有的TypeStatusCountList,匹配设备类型 则 匹配
+          //1.1.1.1 foreach遍历该设备类型的所有状态数量信息，匹配1.的状态类型，拿到状态对应的数量；
+          if (this.NEtypesList !== null && this.NEtypes !== null && this.status_type !== null) {
+            return this.NEtypesList.map(status_typeListItem => {
+              this.countlist = [];
+
+              let object = {};
+              object.name = status_typeListItem;
+              this.status_typeListItem.forEach(NEtypesListIten => {
+                 this.TypeStatusCount.forEach(TypeStatusCountItem => {
+                  if (TypeStatusCountItem.name === NEtypesListIten) {
+                    //取数据
+                    TypeStatusCountItem.statusCounts.forEach(statusCountsItem => {
+                      if (statusCountsItem.status === status_typeListItem) {
+                        //获得得一个数据
+                        // count = statusCountsItem.count;
+                        this.countlist.push(statusCountsItem.count);
+
+                      } else {
+                        this.countlist.push(0);
+                      }
+
+                    })
+
+                  }
+                })
+
+
+              });
+              //
+
+              object.data = this.countlist;
+
+              return object;
+            })
+          }else {
+            return null;
+          }
+
+
+            //数据模板
+            // {
+            //   name: '上架',
+            //     type: 'bar',
+            //   stack: '总量',
+            //   label: {
+            //   show: true,
+            //     position: 'insideRight'
+            // },
+            //   data: [320, 0, 301, 334, 390]
+            // }
+
+        }
+
+      },
         methods:{
         drawChart_typeOverview(){
             // 获取所有的标题
             const dataTitle = [];
             if(this.typeOverview[0].name !== null){
                 for(let index in this.typeOverview){
-                    console.log(this.typeOverview[index])
+                    // console.log(this.typeOverview[index])
                     dataTitle.push(this.typeOverview[index].name);
                 }
 
-                console.log(dataTitle);
-                console.log(this.typeOverview)
+                // console.log(dataTitle);
+                // console.log(this.typeOverview)
             const myChart = this.$echarts.init(this.$refs.typeOverview);
             // 绘制图表
             myChart.setOption({
@@ -114,7 +189,7 @@
                     // 绘制图表
                 statuesOverview.setOption({
                     title: {
-                        text: '各种状态的设备的状态的数量图' ,
+                        text: '各种状态的设备的状态的数量图',
                         left:'center',
                     },
                     tooltip: {
@@ -150,7 +225,7 @@
                                 show: true,
                                 position: 'insideRight'
                             },
-                            data: [320, 302, 301, 334, 390]
+                            data: [320, 0, 301, 334, 390]
                         },
                         {
                             name: '禁止使用',
@@ -197,7 +272,30 @@
 
 
 
-            }
+            },
+          LoadstatuesOverviewData(){
+            //请求;TypeStatusCount
+            getTypeStatusCount().then(res =>{
+              this.TypeStatusCount = res.data;
+              console.log(this.TypeStatusCount);
+            }).catch(error => {
+              console.log(error)
+            })
+            //请求所以的设备类型
+                getAllNEtype().then(res => {
+                  this.NEtypes = res .data;
+                }).catch(error =>{
+                  console.log(error)
+                })
+            // 请求所有的设备状态类型
+            finAllstatus_type().then(res =>{
+              this.status_type = res .data;
+              console.log(this.TypeStatusCountList);
+
+            }).catch(error => {
+              console.log(error)
+            })
+          }
         },
     mounted(){
         //图表1：网络设备类型对应的数量统计信息的数据
@@ -208,6 +306,9 @@
         }).catch(error =>{
             console.log(error);
         });
+
+        this.LoadstatuesOverviewData();
+        //绘制图表2
         this.drawChart_statuesOverview();
 
 

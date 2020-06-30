@@ -7,6 +7,7 @@
                 <el-breadcrumb-item>资产概述</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
+
         <el-button type="primary" icon="el-icon-circle-plus-outline" size="mini" @click.native="clickAddEquip">添加设备</el-button>
 
 <!--    导出按钮-->
@@ -870,4 +871,10 @@
         margin-left: 8px;
     }
 
+</style>
+<style>
+    .heard_nav{
+        /*background: wheat;*/
+        padding: 8px 0;
+    }
 </style>

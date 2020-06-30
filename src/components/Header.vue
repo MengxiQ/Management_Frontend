@@ -35,7 +35,10 @@
                     <li class="avatar_item"><i class="el-icon-user-solid" style="margin-right: 10px"></i>个人中心</li>
                     <li class="avatar_item"><i class="el-icon-s-comment" style="margin-right: 10px"></i>我的消息</li>
                     <li class="avatar_item"><i class="el-icon-download" style="transform: rotate(90deg);margin-right: 10px"></i>注销</li>
-                    <el-avatar  :src="circleUrl" slot="reference"></el-avatar>
+                    <el-badge :value="100" :max="99" class="item" slot="reference">
+                        <el-avatar  :src="circleUrl" ></el-avatar>
+                    </el-badge>
+
                 </el-popover>
 
         </div>
@@ -48,7 +51,7 @@
     data(){
       return {
         activeIndex:"1",
-          circleUrl:"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1593282417545&di=9015beedd550cd6fb33803dabd0a39c5&imgtype=0&src=http%3A%2F%2Fimg2.imgtn.bdimg.com%2Fit%2Fu%3D2990154147%2C3784512145%26fm%3D214%26gp%3D0.jpg"
+          circleUrl:"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1593342463606&di=ceaeec8cd06d0de3c714868d9e12f3ed&imgtype=0&src=http%3A%2F%2Fimg3.imgtn.bdimg.com%2Fit%2Fu%3D2464338708%2C3226695534%26fm%3D214%26gp%3D0.jpg"
       }
     },
     methods:{
